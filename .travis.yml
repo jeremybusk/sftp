@@ -1,12 +1,11 @@
-language: python
-python:
-  - "3.6"
+dist: bionic
 sudo: required
 install:
-  - pip install -r ci/requirements.txt 
+  - sudo apt-get install -y python3
+  - pip install -r requirements.txt 
 script:
   - apt-get update 
-  - apt-get install -y shellcheck
+  - sudo apt-get install -y shellcheck
   - shellcheck osfiles/usr/local/bin/sftpuseradd
   - ./install.sh 
   - ./ci-test.sh 
