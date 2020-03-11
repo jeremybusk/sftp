@@ -42,3 +42,5 @@ ss -lnt | grep 22
 ## ProFTPd & Postgres  
 
 - https://www.howtoforge.com/proftpd_postgresql_auth_logging
+
+# Notes
