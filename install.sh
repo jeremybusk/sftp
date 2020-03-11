@@ -8,4 +8,3 @@ cp -p osfiles/etc/ssh/sshd_config /etc/ssh/sshd_config
 # systemctl enable sshd
 systemctl reload sshd
 cp -p osfiles/usr/local/sbin/sftpuseradd /usr/local/sbin/
-sftpuseradd --sftp-user jtest1 --sftp-pass jtest1
