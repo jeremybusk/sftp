@@ -29,6 +29,12 @@ ss -lnt | grep 22
 - https://www.tecmint.com/sftp-command-examples/
 - https://lftp.yar.ru/lftp-man.html
 
+# SFTP Clients
+- https://github.com/lavv17/lftp https://lftp.yar.ru/lftp-man.html
+- https://linux.die.net/man/1/sftp
+- https://godoc.org/github.com/pkg/sftp
+- https://pypi.org/project/pysftp/
+
 # Notes
 ```
 # echo "username:password" | chpasswd
