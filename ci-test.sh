@@ -7,6 +7,7 @@ sftpuseradd --sftp-user jtest1 --sftp-pass jtest1
 ./sftp-test.py -u jtest1 -p jtest1
 date > time.txt
 lftp sftp://jtest1:jtest1@127.0.0.1  -e "set sftp:auto-confirm yes; put time.txt; quit"
+lftp sftp://jtest1:jtest1@127.0.0.1 <<< $'pwd'
 lftp sftp://jtest1:jtest1@127.0.0.1 <<< $'!pwd'
 lftp sftp://jtest1:jtest1@127.0.0.1 <<< $'!ls -lat'
 # sudo ls -laht /*
