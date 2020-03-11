@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -exo pipefail
 
-apt-get update
-apt-get install -y openssh-server
+sudo apt-get update
+sudo apt-get install -y python3
+pip install -r requirements.txt
+
+sudo apt-get install -y openssh-server
 # apt-get install python3
-cp -p osfiles/etc/ssh/sshd_config /etc/ssh/sshd_config
+sudo cp -p osfiles/etc/ssh/sshd_config /etc/ssh/sshd_config
 # systemctl enable sshd
-systemctl reload sshd
-cp -p osfiles/usr/local/sbin/sftpuseradd /usr/local/sbin/
+sudo systemctl reload sshd
+sudo cp -p osfiles/usr/local/sbin/sftpuseradd /usr/local/sbin/
