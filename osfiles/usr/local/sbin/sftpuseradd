@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+
+sftp_group="sftp"
+sftp_chroot="/sftp"
+
+
+# if [[ $UID != 0 ]]; then
+#     echo "Please run this script with sudo:"
+#     echo "sudo $0 $*"
+#     exit 1
+# fi
+
+
+while true; do
+  case "$1" in
+    --sftp-user ) sftp_user="$2"; shift 2;;
+    --sftp-pass ) sftp_pass="$2"; shift 2 ;;
+    -h | --help ) help=true; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+if [ -z "$sftp_user" ] || [ -z "$sftp_pass" ]; then
+  help=true 
+fi
+
+if [[ "${help}" ]]; then
+  echo 'Usage:
+  --sftp-user | my-sftp-user 
+  --sftp-pass | my-sftp-pass
+  -h | --help |
+  '
+  echo "Example:
+  ${0} --sftp-user my-sftp-user --sftp-pass \"my-sftp-pass\""
+  exit
+fi
+
+
+if [ ! "$(getent group "${sftp_group}")" ]; then
+  sudo groupadd "${sftp_group}"
+fi
+
+sudo useradd -s /bin/false -p "$(openssl passwd -1 "${sftp_pass}")" "${sftp_user}"
+sudo usermod -a -G "${sftp_group}" "${sftp_user}"
+
+sudo mkdir -p "${sftp_chroot}/${sftp_user}"
+sudo chown root:"${sftp_group}" "${sftp_chroot}"
+sudo chmod 710 "${sftp_chroot}"
+
+sudo mkdir -p "${sftp_chroot}"
+sudo chown "${sftp_user}:${sftp_user}" "${sftp_chroot}/${sftp_user}"
+sudo chmod 0750 "${sftp_chroot}/${sftp_user}"
+
+echo "Added user: ${sftp_user} sftp dir: ${sftp_chroot}/${sftp_user}."

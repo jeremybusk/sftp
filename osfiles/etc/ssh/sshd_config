@@ -1,0 +1,21 @@
+# Tested on Ubuntu 18.04
+Port 22
+PasswordAuthentication yes
+ChallengeResponseAuthentication no
+UsePAM yes
+
+X11Forwarding no 
+PrintMotd no
+
+AcceptEnv LANG LC_*
+
+Subsystem sftp  /usr/lib/openssh/sftp-server
+
+Match Group sftp
+        PasswordAuthentication yes
+        ChrootDirectory /sftp
+        ForceCommand internal-sftp -d /%u
+        PermitTunnel no
+        AllowAgentForwarding no
+        AllowTcpForwarding no
+        X11Forwarding no
