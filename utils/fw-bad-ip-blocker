@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+# Simple little script for setting up ip blocking via python
+# Large instances probably should use go or something faster
+# from geolite2 import geolite2
+import json
+import re
+import ipaddress
+import select
+import subprocess
+
+# Add set and place in wanted tables - check position if not insert first
+# sudo nft add set inet filter blackhole4 { type ipv4_addr\;}
+# sudo nft add rule inet filter input ip saddr @blackhole4 drop
+# sudo nft add rule inet filter forward ip saddr @blackhole4 drop
+# sudo nft list set inet filter blackhole4
+# sudo nft list ruleset > /etc/nftables.conf && sudo systemctl restart nftables
+# sudo nft delete element inet filter blackhole4 { {ip} }
+# sudo nft list ruleset > /etc/nftables.conf && sudo systemctl restart nftables
+
+
+
+# reader = geolite2.reader()
+fw_management_ip = 'x.x.x.x'
+
+
+def main():
+    # args = ['journalctl', '--lines', '0', '--follow', '_SYSTEMD_UNIT=myservice.service']
+    args = ['journalctl', '--lines', '0', '--follow']
+    f = subprocess.Popen(args, stdout=subprocess.PIPE)
+    p = select.poll()
+    p.register(f.stdout)
+     
+    while True:
+        if p.poll(100):
+            line = f.stdout.readline().decode('utf-8')
+            if 'Failed password for invalid user' in line:
+                ip = line.split('Failed password for invalid user')[1].split(' from ')[1].split(' ')[0]
+                ip = ip.strip()
+                r = firewall_block_ip(ip)
+                if r:
+                    msg = f"{ip} has been blocked."
+                    print(msg)
+
+
+def firewall_block_ip(ip):
+    # try:
+    #     info = reader.get(ip)
+    #     iso_code = info['country']['iso_code'].lower()
+    #     print(f"ip: {ip}, co: {iso_code}")
+    # except:
+    #     pass
+    #     # if not ipaddress.ip_address(ip).is_private and iso_code != 'us':
+    if not ipaddress.ip_address(ip):
+        print(f"{ip} is not valid ip address.")
+    elif ipaddress.ip_address(ip).is_private:
+        print(f"{ip} is private ip address.")
+    if is_trusted_ip(ip):
+        print(f"{ip} is trusted ip address.")
+    elif ipaddress.ip_address(ip):
+        # print(f'Blocking ip {ip}.')
+        cmd = f'ssh {fw_management_ip} "sudo nft add element inet filter blackhole4 { {ip} }"'
+        # print(cmd)
+        r = subprocess.run(cmd, shell=True)
+        # r = subprocess.run(, shell=True)
+        # print(r)
+        return True
+    else:
+        print(f"{ip} didn't match any criteria.")
+
+    return False
+
+
+def is_trusted_ip(ip):
+
+    # replace with your trusted networks
+    trusted_networks = ['x.x.x.0/24',
+                        'x.x.x.144/28']
+
+    for trusted_network in trusted_networks:
+        if ipaddress.ip_address(ip) in ipaddress.ip_network(trusted_network):
+            return True
+    return False
+
+
+def firewall_blackhole_ip():
+     cmd = f"sudo nft delete element inet filter blackhole4 { {ip} }"
+
+
+if __name__ == "__main__":
+    main()
