@@ -46,11 +46,11 @@ fi
 sudo useradd -s /bin/false -p "$(openssl passwd -1 "${sftp_pass}")" "${sftp_user}"
 sudo usermod -a -G "${sftp_group}" "${sftp_user}"
 
+sudo mkdir -p "${sftp_chroot}"
+sudo chmod 710 "${sftp_chroot}"
 sudo mkdir -p "${sftp_chroot}/${sftp_user}"
 sudo chown root:"${sftp_group}" "${sftp_chroot}"
-sudo chmod 710 "${sftp_chroot}"
 
-sudo mkdir -p "${sftp_chroot}"
 sudo chown "${sftp_user}:${sftp_user}" "${sftp_chroot}/${sftp_user}"
 sudo chmod 0750 "${sftp_chroot}/${sftp_user}"
 
