@@ -1,0 +1,27 @@
+#!/usr/sbin/nft -f
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+        udp sport bootpc udp dport bootps ip saddr 0.0.0.0 ip daddr 255.255.255.255 accept comment "Accept DHCPDISCOVER (for DHCP-Proxy)"
+        ct state { established, related } accept
+        ct state invalid drop
+        iifname "lo" accept
+        ip protocol icmp accept
+        ip6 nexthdr ipv6-icmp accept
+        tcp dport 53 accept
+        udp dport 53 accept
+        tcp dport {ssh} accept
+        meta nfproto ipv4 reject
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        # type filter hook forward priority 0; policy accept;
+        # udp dport { 514 } dnat to 172.16.0.47
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
