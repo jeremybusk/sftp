@@ -27,6 +27,7 @@ ss -lnt | grep 22
 - https://serverfault.com/questions/910789/chroot-sftp-possible-to-allow-user-to-write-to-current-chroot-directory
 - https://serverfault.com/questions/868092/how-do-i-create-a-user-with-a-password-in-one-line-in-bash-on-redhat
 - https://www.tecmint.com/sftp-command-examples/
+- https://lftp.yar.ru/lftp-man.html
 
 # Notes
 ```

@@ -2,7 +2,7 @@
 set -exo pipefail
 
 sudo apt-get update
-sudo apt-get install -y nftables openssh-server python3 shellcheck
+sudo apt-get install -y nftables openssh-server python3 shellcheck lftp
 
 shellcheck osfiles/usr/local/sbin/sftpuseradd
 pip3 install flake8
